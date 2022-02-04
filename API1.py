@@ -5,6 +5,7 @@ import requests
 from PyQt5 import uic
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
+from PyQt5.QtCore import Qt
 
 SCREEN_SIZE = [600, 500]
 
@@ -13,15 +14,14 @@ class Example(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('map.ui', self)
-        '''self.setGeometry(100, 100, *SCREEN_SIZE)
-        self.setWindowTitle('Отображение карты')'''
+        self.setWindowTitle('Отображение карты')
         self.lineEdit.textChanged.connect(self.getImage)
         self.lineEdit_2.textChanged.connect(self.getImage)
         self.horizontalSlider.sliderMoved.connect(self.getImage)
 
     def getImage(self):
         params = {
-            'll': ','.join([self.lineEdit.text(), self.lineEdit_2.text()]),
+            'll': ','.join([self.lineEdit_2.text(), self.lineEdit.text()]),
             'z': str(self.horizontalSlider.sliderPosition()),
             'l': 'map'
         }
@@ -35,9 +35,13 @@ class Example(QMainWindow):
             pixmap = QPixmap(self.map_file)
             self.image.setPixmap(pixmap)
 
-    '''def initUI(self):
-        self.setGeometry(100, 100, *SCREEN_SIZE)
-        self.setWindowTitle('Отображение карты')'''
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_PageUp:
+            self.horizontalSlider.setSliderPosition(self.horizontalSlider.sliderPosition()+1)
+            self.getImage()
+        elif event.key() == Qt.Key_PageDown:
+            self.horizontalSlider.setSliderPosition(self.horizontalSlider.sliderPosition()-1)
+            self.getImage()
 
     def closeEvent(self, event):
         os.remove(self.map_file)
