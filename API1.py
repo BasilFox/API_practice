@@ -3,11 +3,9 @@ import sys
 
 import requests
 from PyQt5 import uic
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
 from PyQt5.QtCore import Qt
-
-SCREEN_SIZE = [600, 500]
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QMainWindow
 
 
 class Example(QMainWindow):
@@ -37,11 +35,24 @@ class Example(QMainWindow):
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_PageUp:
-            self.horizontalSlider.setSliderPosition(self.horizontalSlider.sliderPosition()+1)
+            self.horizontalSlider.setSliderPosition(self.horizontalSlider.sliderPosition() + 1)
             self.getImage()
         elif event.key() == Qt.Key_PageDown:
-            self.horizontalSlider.setSliderPosition(self.horizontalSlider.sliderPosition()-1)
+            self.horizontalSlider.setSliderPosition(self.horizontalSlider.sliderPosition() - 1)
             self.getImage()
+        elif event.key() == Qt.Key_Up:
+            self.lineEdit.setText(str(float(self.lineEdit.text()) + self.degree.value()))
+            self.getImage()
+        elif event.key() == Qt.Key_Down:
+            self.lineEdit.setText(str(float(self.lineEdit.text()) - self.degree.value()))
+            self.getImage()
+        elif int(event.modifiers()) == Qt.AltModifier:
+            if event.key() == Qt.Key_Left:
+                self.lineEdit_2.setText(str(float(self.lineEdit_2.text()) - self.degree.value()))
+                self.getImage()
+            elif event.key() == Qt.Key_Right:
+                self.lineEdit_2.setText(str(float(self.lineEdit_2.text()) + self.degree.value()))
+                self.getImage()
 
     def closeEvent(self, event):
         os.remove(self.map_file)
