@@ -10,18 +10,22 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 
 class Example(QMainWindow):
     def __init__(self):
+        self.maptype_words = ['Схема', 'Спутник', 'Гибрид']
+        self.maptype_API = ['map', 'sat', 'sat,skl']
+        self.maptype = 0
         super().__init__()
         uic.loadUi('map.ui', self)
         self.setWindowTitle('Отображение карты')
         self.lineEdit.textChanged.connect(self.getImage)
         self.lineEdit_2.textChanged.connect(self.getImage)
         self.horizontalSlider.sliderMoved.connect(self.getImage)
+        self.maptypeButton.clicked.connect(self.maptypechanger)
 
     def getImage(self):
         params = {
             'll': ','.join([self.lineEdit_2.text(), self.lineEdit.text()]),
             'z': str(self.horizontalSlider.sliderPosition()),
-            'l': 'map'
+            'l': self.maptype_API[self.maptype % 3]
         }
         server = "http://static-maps.yandex.ru/1.x"
         response = requests.get(server, params=params)
@@ -53,6 +57,11 @@ class Example(QMainWindow):
             elif event.key() == Qt.Key_Right:
                 self.lineEdit_2.setText(str(float(self.lineEdit_2.text()) + self.degree.value()))
                 self.getImage()
+
+    def maptypechanger(self):
+        self.maptype += 1
+        self.maptypeButton.setText(self.maptype_words[self.maptype % 3])
+        self.getImage()
 
     def closeEvent(self, event):
         os.remove(self.map_file)
