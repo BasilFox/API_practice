@@ -84,7 +84,7 @@
      <rect>
       <x>20</x>
       <y>560</y>
-      <width>311</width>
+      <width>661</width>
       <height>25</height>
      </rect>
     </property>
@@ -120,6 +120,23 @@
       <widget class="QPushButton" name="maptypeButton">
        <property name="text">
         <string>Схема</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="searchline"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="search">
+       <property name="text">
+        <string>Поиск</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="clearBut">
+       <property name="text">
+        <string>Очистить</string>
        </property>
       </widget>
      </item>
