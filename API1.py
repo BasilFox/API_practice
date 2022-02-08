@@ -24,6 +24,8 @@ class Example(QMainWindow):
         self.clearBut.clicked.connect(self.clear)
         self.point_cords = -500, -500
         self.search_flag = False
+        self.postal_flag = False
+        self.checkBox.stateChanged.connect(self.postal_view)
 
     def getImage(self):
         if self.point_cords[0] != -500 and self.point_cords[1] != -500:
@@ -31,7 +33,6 @@ class Example(QMainWindow):
         else:
             self.search_flag = False
         if self.search_flag == False:
-            print(0)
             params = {
                 'll': ','.join([self.lineEdit_2.text(), self.lineEdit.text()]),
                 'z': str(self.horizontalSlider.sliderPosition()),
@@ -47,7 +48,7 @@ class Example(QMainWindow):
                 pixmap = QPixmap(self.map_file)
                 self.image.setPixmap(pixmap)
         else:
-            print(1)
+
             params = {
                 'll': ','.join([self.lineEdit_2.text(), self.lineEdit.text()]),
                 'z': str(self.horizontalSlider.sliderPosition()),
@@ -107,11 +108,18 @@ class Example(QMainWindow):
         if not response1:
             self.search_flag = False
         else:
+            self.adressBox_2.clear()
             json_response = response1.json()
             toponym = json_response["response"]["GeoObjectCollection"][
                 "featureMember"][0]["GeoObject"]
+            if self.postal_flag is False:
+                self.adressBox_2.append(
+                    toponym["metaDataProperty"]["GeocoderMetaData"]["Address"]["formatted"])
+            else:
+                self.adressBox_2.append(
+                    toponym["metaDataProperty"]["GeocoderMetaData"]["Address"][
+                        "formatted"] + '\n' + f'Индекс {toponym["metaDataProperty"]["GeocoderMetaData"]["Address"]["postal_code"]}')
             toponym_coodrinates = toponym["Point"]["pos"]
-            # Долгота и широта:
             toponym_longitude, toponym_lattitude = toponym_coodrinates.split(" ")
             self.point_cords = toponym_longitude, toponym_lattitude
             self.search_flag = True
@@ -126,7 +134,17 @@ class Example(QMainWindow):
 
     def clear(self):
         self.point_cords = -500, -500
+        self.searchline.clear()
+        self.adressBox_2.clear()
         self.getImage()
+
+    def postal_view(self):
+        if self.checkBox.checkState() == 2:
+            self.postal_flag = True
+            self.searchfunc()
+        else:
+            self.postal_flag = False
+            self.searchfunc()
 
 
 if __name__ == '__main__':
